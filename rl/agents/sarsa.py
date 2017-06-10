@@ -14,7 +14,9 @@ from rl.util import get_object_config
 from rl.keras_future import Model
 
 
-class SarsaAgent(Agent):
+class SARSAAgent(Agent):
+    """Write me
+    """
     def __init__(self, model, nb_actions, policy=None, test_policy=None, gamma=.99, nb_steps_warmup=10,
                  train_interval=1, delta_clip=np.inf, *args, **kwargs):
         super(SarsaAgent, self).__init__(*args, **kwargs)
@@ -29,7 +31,7 @@ class SarsaAgent(Agent):
         self.model = model
         self.nb_actions = nb_actions
         self.policy = policy
-        self.test_policy = policy
+        self.test_policy = test_policy
         self.gamma = gamma
         self.nb_steps_warmup = nb_steps_warmup
         self.train_interval = train_interval
@@ -195,6 +197,10 @@ class SarsaAgent(Agent):
         return metrics
 
     @property
+    def layers(self):
+        return self.model.layers[:]
+
+    @property
     def metrics_names(self):
         # Throw away individual losses and replace output name since this is hidden from the user.
         assert len(self.trainable_model.output_names) == 2
@@ -224,3 +230,6 @@ class SarsaAgent(Agent):
     def test_policy(self, policy):
         self.__test_policy = policy
         self.__test_policy._set_agent(self)
+
+# Aliases
+SarsaAgent = SARSAAgent
