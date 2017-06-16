@@ -15,8 +15,6 @@ def mean_q(y_true, y_pred):
 
 
 class AbstractDQNAgent(Agent):
-    """Write me
-    """
     def __init__(self, nb_actions, memory, gamma=.99, batch_size=32, nb_steps_warmup=1000,
                  train_interval=1, memory_interval=1, target_model_update=10000,
                  delta_range=None, delta_clip=np.inf, custom_model_objects={}, **kwargs):
@@ -87,8 +85,6 @@ class AbstractDQNAgent(Agent):
 # http://arxiv.org/pdf/1312.5602.pdf
 # http://arxiv.org/abs/1509.06461
 class DQNAgent(AbstractDQNAgent):
-    """Write me
-    """
     def __init__(self, model, policy=None, test_policy=None, enable_double_dqn=True, enable_dueling_network=False,
                  dueling_type='avg', *args, **kwargs):
         super(DQNAgent, self).__init__(*args, **kwargs)
@@ -325,10 +321,6 @@ class DQNAgent(AbstractDQNAgent):
         return metrics
 
     @property
-    def layers(self):
-        return self.model.layers[:]
-
-    @property
     def metrics_names(self):
         # Throw away individual losses and replace output name since this is hidden from the user.
         assert len(self.trainable_model.output_names) == 2
@@ -361,8 +353,6 @@ class DQNAgent(AbstractDQNAgent):
 
 
 class NAFLayer(Layer):
-    """Write me
-    """
     def __init__(self, nb_actions, mode='full', **kwargs):
         if mode not in ('full', 'diag'):
             raise RuntimeError('Unknown mode "{}" in NAFLayer.'.format(self.mode))
@@ -545,12 +535,10 @@ class NAFLayer(Layer):
         return input_shape[0][0], 1
 
 
-class NAFAgent(AbstractDQNAgent):
-    """Write me
-    """
+class ContinuousDQNAgent(AbstractDQNAgent):
     def __init__(self, V_model, L_model, mu_model, random_process=None,
                  covariance_mode='full', *args, **kwargs):
-        super(NAFAgent, self).__init__(*args, **kwargs)
+        super(ContinuousDQNAgent, self).__init__(*args, **kwargs)
 
         # TODO: Validate (important) input.
 
@@ -711,12 +699,8 @@ class NAFAgent(AbstractDQNAgent):
 
         return metrics
 
-    @property
-    def layers(self):
-        return self.combined_model.layers[:]
-
     def get_config(self):
-        config = super(NAFAgent, self).get_config()
+        config = super(ContinuousDQNAgent, self).get_config()
         config['V_model'] = get_object_config(self.V_model)
         config['mu_model'] = get_object_config(self.mu_model)
         config['L_model'] = get_object_config(self.L_model)
@@ -730,7 +714,3 @@ class NAFAgent(AbstractDQNAgent):
         if self.processor is not None:
             names += self.processor.metrics_names[:]
         return names
-
-
-# Aliases
-ContinuousDQNAgent = NAFAgent
