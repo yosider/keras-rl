@@ -22,6 +22,7 @@ obs_dim = env.observation_space.shape[0]
 # Option 1 : Simple model
 model = Sequential()
 model.add(Flatten(input_shape=(1,) + env.observation_space.shape))
+model.add(Dense(16, activation='relu'))
 model.add(Dense(nb_actions))
 model.add(Activation('softmax'))
 
@@ -57,5 +58,5 @@ cem.fit(env, nb_steps=100000, visualize=False, verbose=1)
 # After training is done, we save the best weights.
 cem.save_weights('cem_{}_params.h5f'.format(ENV_NAME), overwrite=True)
 
-# Finally, evaluate our algorithm for 5 episodes.
-cem.test(env, nb_episodes=5, visualize=True)
+# Finally, evaluate our algorithm for 20 episodes.
+cem.test(env, nb_episodes=20, visualize=True)
